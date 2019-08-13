@@ -1,5 +1,5 @@
 <template>
-  <canvas width="400" height="400"
+  <canvas width="600" height="400" class="canvas"
    @mousedown="draw_activate()"
    @mousemove="get_current_position($event)"
    @mouseup="draw_deactivate()"
@@ -57,6 +57,6 @@ export default {
 
 <style scoped>
 .canvas {
-  border: 1px solid #000;
+  border: 1px solid #000000;
 }
 </style>
