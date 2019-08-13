@@ -3,6 +3,7 @@
     <Canvas ref="canvas"/>
     <h3 v-if="state=='Done'">You've made a link diagram! congrats!</h3>
     <button @click="configure_link()" v-if="state=='Done'">configure a link!</button>
+    <h3 v-if="state=='Configured'">You can submit this link and get the Jones polynomial!</h3>
   </div>
 </template>
 
@@ -36,7 +37,7 @@ export default {
   data: function() {
     return {
       //代数的データ型が欲しいけど、諦める
-      // state = Ready | Draw | Suspend | Done
+      // state = Ready | Draw | Suspend | Done | Configured
       // Draw  = DrawUnTerminable | DrawTerminable
       state: 'Ready',
       state_sub: 'DrawUnTerminable',
@@ -50,11 +51,17 @@ export default {
   },
   methods: {
     dump_link_json(){
-      //change later
-      var last_edge_index = this.trajectory.length;
+      var intersection_edge_list = []
+      this.intersection_pairs.forEach(function(p){
+        Array.prototype.push.apply(intersection_edge_list,p);
+      })
+      intersection_edge_list.sort(function(a,b){return a-b;});
+      var edge_max_index = intersection_edge_list.length;
       var ret_json = {};
-      Array(this.projection_edge.length).forEach(function(ind){
-        ret_json[ind] = this.projection_edge[ind].map(x => x == last_edge_index-1?0:x);
+      this.intersection_pairs.forEach(function(p,ind){
+        var back_ind  = intersection_edge_list.indexOf(p[0]);
+        var front_ind = intersection_edge_list.indexOf(p[1]);
+        ret_json[ind] = [front_ind,(front_ind+1)%edge_max_index,back_ind,(back_ind+1)%edge_max_index];
       });
       return JSON.stringify(ret_json)
     },
@@ -69,7 +76,7 @@ export default {
       }
     },
     suspend(){
-      if(this.state!='Done'){
+      if(!(this.state=='Done' || this.state=='Configured')){
         this.state='Suspend';
         this.$refs.canvas.draw_enable = false;
       }
@@ -126,6 +133,7 @@ export default {
           this.$refs.canvas.ctx.stroke();
         },this)
       },this)
+      this.state = 'Configured';
     },
     configure_link(){
       var trajectory_len = this.trajectory.length;

@@ -2,7 +2,7 @@
   <div id="app">
     <h1>Jones Polynomial</h1>
     <DrawManager ref="draw_manager"/>
-    <button @click="submit()" v-if="done"></button>
+    <button @click="submit()" v-if="configured">submit</button>
   </div>
 </template>
 
@@ -12,16 +12,21 @@ export default {
   name: 'app',
   data: function(){
     return{
-      done: false
+      configured: false
     }
   },
   methods: {
     submit: function(){
       //送信
+      alert(this.$refs.draw_manager.dump_link_json())
     }
   },
   mounted: function(){
-    this.done = this.$refs.draw_manager.state == 'Done'
+    this.$watch(
+      "$refs.draw_manager.state",
+    function(){
+      this.configured=(this.$refs.draw_manager.state == 'Configured');
+    })
   },
   components: {
     DrawManager
