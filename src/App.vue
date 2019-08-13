@@ -1,17 +1,30 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>Jones Polynomial</h1>
+    <DrawManager ref="draw_manager"/>
+    <button @click="submit()" v-if="done"></button>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import DrawManager from './components/DrawManager.vue'
 export default {
   name: 'app',
+  data: function(){
+    return{
+      done: false
+    }
+  },
+  methods: {
+    submit: function(){
+      //送信
+    }
+  },
+  mounted: function(){
+    this.done = this.$refs.draw_manager.state == 'Done'
+  },
   components: {
-    HelloWorld
+    DrawManager
   }
 }
 </script>
