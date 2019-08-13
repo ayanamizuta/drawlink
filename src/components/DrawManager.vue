@@ -85,22 +85,28 @@ export default {
       }
       return line_formula(l2_from)*line_formula(l2_to)<0;
     },
-    intersection(idx,idy){
-
+    intersection_position(idx,idy){
+      var l1_from  = this.trajectory[idx];
+      var l1_to    = this.trajectory[idx+1];
+      var l2_from  = this.trajectory[idy];
+      var l2_to    = this.trajectory[idy+1];
+      var retx = (l1_from[1]-l2_from[1]
+                  -l1_from[0]*(l1_to[1]-l1_from[1])/(l1_to[0]-l1_from[0])
+                  +l2_from[0]*(l2_to[1]-l2_from[1])/(l2_to[0]-l2_from[0]))
+                  /((l2_to[1]-l2_from[1])/(l2_to[0]-l2_from[0])-(l1_to[1]-l1_from[1])/(l1_to[0]-l1_from[0]));
+      return [retx,l1_from[1]+retx*(l1_to[1]-l1_from[1])/(l1_to[0]-l1_from[0])-l1_from[0]*(l1_to[1]-l1_from[1])/(l1_to[0]-l1_from[0])]
     },
     rearrange_projection_diagram(){
       this.intersection_pairs.forEach(function(pair){
-        var back_from  = this.trajectory[pair[0]];
-        var back_to    = this.trajectory[pair[0]+1];
-
         /*
         this.$refs.canvas.ctx.beginPath();
         this.$refs.canvas.ctx.moveTo(back_from[0], back_from[1]);
         this.$refs.canvas.ctx.lineTo(back_to[0], back_to[1]);
         this.$refs.canvas.ctx.clip();
         */
-        this.$refs.canvas.ctx.clearRect((back_from[0]+back_to[0]-this.erase_radius)/2,
-                                        (back_from[1]+back_to[1]-this.erase_radius)/2,
+        var intersection_pos = this.intersection_position(pair[0],pair[1]);
+        this.$refs.canvas.ctx.clearRect(intersection_pos[0]-this.erase_radius/2,
+                                        intersection_pos[1]-this.erase_radius/2,
                                         this.erase_radius,
                                         this.erase_radius);
 
