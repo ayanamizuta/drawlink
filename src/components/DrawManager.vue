@@ -57,11 +57,12 @@ export default {
       })
       intersection_edge_list.sort(function(a,b){return a-b;});
       var edge_max_index = intersection_edge_list.length;
-      var ret_json = {};
+      var ret_json = [];
       this.intersection_pairs.forEach(function(p,ind){
         var back_ind  = intersection_edge_list.indexOf(p[0]);
         var front_ind = intersection_edge_list.indexOf(p[1]);
-        ret_json[ind] = [front_ind,(front_ind+1)%edge_max_index,back_ind,(back_ind+1)%edge_max_index];
+        var json_intersection = {"intersection_id":ind,"front_edge_ids":[front_ind,(front_ind+1)%edge_max_index],"back_edge_ids":[back_ind,(back_ind+1)%edge_max_index]};
+        ret_json.push(json_intersection);
       });
       return JSON.stringify(ret_json)
     },
