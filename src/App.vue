@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <h1>Jones Polynomial</h1>
+    <h1>Kauffman Bracket</h1>
     <DrawManager ref="draw_manager"/>
-    <button @click="submit()" v-if="configured && jones_polynomial==null">submit</button>
-    <h2 v-if="jones_polynomial" id="jones_polynomial">The Jones polynomial of this link is \({{jones_polynomial}}\)</h2>
+    <button @click="submit()" v-if="configured && kauffman_bracket==null">submit</button>
+    <h2 v-if="kauffman_bracket" id="kauffman_bracket">The Kauffman bracket of this link is \({{kauffman_bracket}}\)</h2>
   </div>
 </template>
 
@@ -21,7 +21,7 @@ export default {
   data: function(){
     return{
       configured: false,
-      jones_polynomial: null,
+      kauffman_bracket: null,
       url: 'http://localhost:8080/jones/post'
     }
   },
@@ -35,8 +35,8 @@ export default {
       }
       axios.post(this.url,this.$refs.draw_manager.dump_link_json(),config)
       .then(function(res){
-        this.jones_polynomial = res.data
-        this.$nextTick(()=>MathJax.Hub.Queue(["Typeset",MathJax.Hub,"jones_polynomial"]))
+        this.kauffman_bracket = res.data
+        this.$nextTick(()=>MathJax.Hub.Queue(["Typeset",MathJax.Hub,"kauffman_bracket"]))
       }.bind(this))
       .catch(function(res){
         alert(res)

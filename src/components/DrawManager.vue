@@ -3,7 +3,7 @@
     <Canvas ref="canvas"/>
     <h3 v-if="state=='Done'">You've made a link diagram! congrats!</h3>
     <button @click="configure_link()" v-if="state=='Done'">configure a link!</button>
-    <h3 v-if="state=='Configured'">You can submit this link and get the Jones polynomial!</h3>
+    <h3 v-if="state=='Configured'">You can submit this link and get the Kauffman bracket!</h3>
   </div>
 </template>
 
@@ -58,12 +58,24 @@ export default {
       intersection_edge_list.sort(function(a,b){return a-b;});
       var edge_max_index = intersection_edge_list.length;
       var ret_json = [];
+
+      function calcAngleDegrees(v) {
+        return Math.atan2(v[1], v[0]) * 180 / Math.PI;
+      }
       this.intersection_pairs.forEach(function(p,ind){
         var back_ind  = intersection_edge_list.indexOf(p[0]);
         var front_ind = intersection_edge_list.indexOf(p[1]);
+        var vector_front = [this.trajectory[p[1]+1][0] - this.trajectory[p[1]][0],this.trajectory[p[1]+1][1] - this.trajectory[p[1]][1]];
+        var vector_front_init_to_back_init = [this.trajectory[p[0]][0] - this.trajectory[p[1]][0],this.trajectory[p[0]][1] - this.trajectory[p[1]][1]];
+        var arc = -calcAngleDegrees(vector_front)+calcAngleDegrees(vector_front_init_to_back_init);
         var json_intersection = {"intersection_id":ind,"front_edge_ids":[front_ind,(front_ind+1)%edge_max_index],"back_edge_ids":[back_ind,(back_ind+1)%edge_max_index]};
+        if(arc < 0 && arc > -180 || arc < 360 && arc > 180){
+          var tmp = json_intersection["back_edge_ids"][0];
+          json_intersection["back_edge_ids"][0] = json_intersection["back_edge_ids"][1];
+          json_intersection["back_edge_ids"][1] = tmp;
+        }
         ret_json.push(json_intersection);
-      });
+      },this);
       return JSON.stringify(ret_json)
     },
     distance(a2d,b2d){
