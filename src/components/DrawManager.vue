@@ -24,21 +24,13 @@ export default {
     erase_radius: {
       type: Number,
       default: 15
-    },
-    divide_x: {
-      type: Number,
-      default: 10
-    },
-    divide_y: {
-      type: Number,
-      default: 10
     }
   },
   data: function() {
     return {
       //代数的データ型が欲しいけど、諦める
-      // state = Ready | Draw | Suspend | Done | Configured
-      // Draw  = DrawUnTerminable | DrawTerminable
+      // state      = Ready | Draw | Suspend | Done | Configured
+      // state_sub  = DrawUnTerminable | DrawTerminable
       state: 'Ready',
       state_sub: 'DrawUnTerminable',
       initial_place: null,
