@@ -22,7 +22,7 @@ export default {
     return{
       configured: false,
       kauffman_bracket: null,
-      url: 'http://localhost:8080/jones/post'
+      url: '/jones/post'
     }
   },
   methods: {

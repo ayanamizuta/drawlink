@@ -1,5 +1,5 @@
 <template>
-  <div @mouseup="suspend()" @mousedown="resume()">
+  <div @mouseup="suspend()" @mousedown="resume()" @click="intersection_parity_change()">
     <Canvas ref="canvas"/>
     <h3 v-if="state=='Done'">You've made a link diagram! congrats!</h3>
     <button @click="configure_link()" v-if="state=='Done'">configure a link!</button>
@@ -42,6 +42,18 @@ export default {
     Canvas
   },
   methods: {
+    intersection_parity_change(){
+      if(this.state!='Configured')return;
+      var c = this.$refs.canvas;
+      this.intersection_pairs.forEach(function(p,idx){
+        var intersection_pos = this.intersection_position(p[0],p[1]);
+        if(this.distance(intersection_pos,[c.current_x,c.current_y])<this.erase_radius){
+          var tmp = [p[1],p[0]];
+          this.intersection_pairs[idx] = tmp;
+        }
+      },this);
+      this.rearrange_projection_diagram();
+    },
     dump_link_json(){
       var intersection_edge_list = []
       this.intersection_pairs.forEach(function(p){
